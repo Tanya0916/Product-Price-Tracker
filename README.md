@@ -1,8 +1,42 @@
 # INE Product Price Tracker (Web Scraping)
 
-A  full-stack web application that tracks products from the INE hosted mock store ([https://demo.inelabteamdev.com](https://demo.inelabteamdev.com)), scrapes live prices and stock on a 2-hour schedule, and provides honest attempt logging and time-series visualization.
+A resilient full-stack web application that tracks products from the INE hosted mock store ([https://demo.inelabteamdev.com](https://demo.inelabteamdev.com)), scrapes live prices and stock on a 2-hour schedule, and provides honest attempt logging and time-series visualization.
 
+---
 
+## 🏛️ Architecture Overview
+
+The application is structured into four decoupled layers:
+
+```
+                         ┌─────────────────────┐
+                         │   React Frontend    │
+                         │ (Vite, Tailwind,    │
+                         │    Recharts UI)     │
+                         └──────────┬──────────┘
+                                    │ REST APIs
+                                    ▼
+                         ┌─────────────────────┐
+                         │ Node/Express Backend│
+                         │  (Controllers and   │
+                         │     Services)       │
+                         └──────────┬──────────┘
+                                    │
+                 ┌──────────────────┼──────────────────┐
+                 ▼                  ▼                  ▼
+          ┌─────────────┐   ┌──────────────┐   ┌──────────────┐
+          │ PostgreSQL  │   │ Scraper      │   │ Scheduler    │
+          │  Supabase   │   │ Service      │   │ cron-job.org │
+          └─────────────┘   └──────┬───────┘   └──────┬───────┘
+                                   │                  │
+                              ┌────┴────┐             │
+                              ▼         ▼             │
+                           HTTP     Playwright        │
+                              │         │             │
+                              └────┬────┘             │
+                                   ▼                  │
+                             INE Mock Store ◄─────────┘
+```
 
 1. **Product Management Layer**: Allows users to search INE mock store items by partial/full name or SKU, configure scraping frequency, and track products.
 2. **Scraping Engine Layer**: Hybrid scraper that attempts fast HTTP fetching first, falling back to Playwright browser automation when dynamic client-side challenges (interaction gates, mouse dwell, obfuscated tokens) are detected.
@@ -11,7 +45,7 @@ A  full-stack web application that tracks products from the INE hosted mock stor
 
 ---
 
-##  Quick Start (Local Setup)
+## 🚀 Quick Start (Local Setup)
 
 ### Prerequisites
 - Node.js >= 18.x
@@ -28,10 +62,10 @@ cd product-price-tracker
 cd backend
 npm install
 
-
+# (Optional) Install Playwright browsers for browser-based scraping & headed runs:
 npx playwright install chromium
 
-
+# Copy environment template
 cp .env.example .env
 ```
 
@@ -55,7 +89,7 @@ Open [http://localhost:3000](http://localhost:3000) in your browser.
 
 ---
 
-## 🎥 Running the (Headed) Scraper
+## 🎥 Running the Observable (Headed) Scraper
 
 Per the assignment instructions, to record the **2 to 4 minute headed run video**:
 
@@ -63,7 +97,7 @@ Per the assignment instructions, to record the **2 to 4 minute headed run video*
 cd backend
 npm run scrape:headed -- 1
 ```
-
+*(Replace `1` with any product ID from the mock store)*
 
 ### What Happens in Headed Mode:
 1. Spawns Chromium in visible window mode with `slowMo: 250ms`.
@@ -77,7 +111,7 @@ npm run scrape:headed -- 1
 
 ---
 
-##  2-Hour Scheduling Architecture (Free-Tier Friendly)
+## ⏱️ 2-Hour Scheduling Architecture (Free-Tier Friendly)
 
 Because Render free-tier instances sleep when inactive, using `setInterval()` inside Node.js is unreliable for unattended background schedules.
 
@@ -93,7 +127,7 @@ Because Render free-tier instances sleep when inactive, using `setInterval()` in
 
 ---
 
-##  Database Setup (Supabase PostgreSQL)
+## 🗄️ Database Setup (Supabase PostgreSQL)
 
 1. Create a free project on [Supabase](https://supabase.com).
 2. Go to the **SQL Editor** in your Supabase dashboard.
@@ -115,7 +149,7 @@ Because Render free-tier instances sleep when inactive, using `setInterval()` in
 
 ---
 
-##  Production Deployment
+## ☁️ Production Deployment
 
 ### Backend on Render.com:
 1. Create a **New Web Service** connected to your GitHub repository.
@@ -139,7 +173,7 @@ Because Render free-tier instances sleep when inactive, using `setInterval()` in
 
 ---
 
-## Also Running Automated Tests
+## 🧪 Running Automated Tests
 
 ```bash
 cd backend

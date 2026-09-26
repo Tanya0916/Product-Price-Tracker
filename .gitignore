@@ -1,6 +1,32 @@
+# Node modules
 node_modules/
 **/node_modules/
-dist/
-**/dist/
+
+# Logs
+*.log
+logs/
+
+# Environment variables & secrets
 .env
-**/pnpm-debug.log*
+*.env
+!.env.example
+backend/.env
+frontend/.env
+
+# Build outputs
+dist/
+build/
+frontend/dist/
+frontend/build/
+
+# IDE & System
+.DS_Store
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# Playwright test results
+test-results/
+playwright-report/
+
